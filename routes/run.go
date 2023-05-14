@@ -24,7 +24,8 @@ func Run() {
 
 	r.GET("/universities", GetUniversitiesHandler)
 	r.GET("/majors", GetMajorsHandler)
-	r.GET("/majors/:name", GetMajorByNameHandler)
+	r.GET("/majors/name", GetMajorByNameHandler)
+	// r.GET("/majors/type/:type", GetMajorByTypeHandler)
 
 	if err := r.Run(); err != nil {
 		panic(err)

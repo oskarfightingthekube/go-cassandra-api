@@ -5,7 +5,6 @@ import (
 	"go-cassandra-api/handlers"
 	"go-cassandra-api/structs"
 	"net/http"
-	"unicode"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,19 +31,29 @@ func GetMajorsHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, majors)
 }
 
+// rewrite GetMajorByNameHandler and take name: "name" from body json
 func GetMajorByNameHandler(c *gin.Context) {
-	major, err := handlers.GetMajorByName(capitalize(c.Param("name")))
+	var majors []structs.MajorsWithUniversity
+	var major structs.MajorName
+	if err := c.BindJSON(&major); err != nil {
+		fmt.Println(major)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request, check your JSON",
+		})
+		return
+	}
+	if major.Name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request, key values missing or empty",
+		})
+		return
+	}
+	majors, err := handlers.GetMajorByName(major.Name)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
-	c.JSON(http.StatusOK, major)
-}
-
-func capitalize(str string) string {
-	runes := []rune(str)
-	runes[0] = unicode.ToUpper(runes[0])
-	return string(runes)
+	c.JSON(http.StatusOK, majors)
 }

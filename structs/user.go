@@ -43,3 +43,7 @@ type MajorsWithUniversity struct {
 	University_id   string `json:"university_id"`
 	University_name string `json:"university_name"`
 }
+
+type MajorName struct {
+	Name string `json:"name"`
+}
