@@ -9,6 +9,8 @@ import (
 	"github.com/gocql/gocql"
 )
 
+var UserID gocql.UUID
+
 func GetUsers() ([]structs.User, error) {
 	var users []structs.User
 	m := map[string]interface{}{}
@@ -63,6 +65,11 @@ func AddUser(user structs.AddUser) error {
 
 	if err := inits.Session.Query("INSERT INTO users (user_id, email, login, password) VALUES (?, ?, ?, ?)",
 		gocql.TimeUUID(), user.Email, user.Login, user.Password).Exec(); err != nil {
+		return err
+	}
+	// get the user_id of created user
+	if err := inits.Session.Query("SELECT user_id FROM users WHERE login=? ALLOW FILTERING",
+		user.Login).Scan(&UserID); err != nil {
 		return err
 	}
 	return nil
