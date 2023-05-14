@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"go-cassandra-api/inits"
 	"go-cassandra-api/structs"
 
@@ -39,6 +40,21 @@ func GetUser(id string) (structs.User, error) {
 }
 
 func AddUser(user structs.AddUser) error {
+	// check if user already exists by login or username
+	var count int
+	if err := inits.Session.Query("SELECT COUNT(*) FROM users WHERE login=? ALLOW FILTERING",
+		user.Login).Scan(&count); err != nil {
+		return err
+	}
+	if err := inits.Session.Query("SELECT COUNT(*) FROM users WHERE email=? ALLOW FILTERING",
+		user.Email).Scan(&count); err != nil {
+		return err
+	}
+
+	if count > 0 {
+		return errors.New("user already exists")
+	}
+
 	if err := inits.Session.Query("INSERT INTO users (user_id, email, login, password) VALUES (?, ?, ?, ?)",
 		gocql.TimeUUID(), user.Email, user.Login, user.Password).Exec(); err != nil {
 		return err

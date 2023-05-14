@@ -36,19 +36,19 @@ func AddUserHandler(c *gin.Context) {
 	if err := c.BindJSON(&user); err != nil {
 		fmt.Println(user)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid request",
+			"message": "Invalid request, check your JSON",
 		})
 		return
 	}
 	if user.Email == "" || user.Login == "" || user.Password == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid request",
+			"message": "Invalid request, key values missing or empty",
 		})
 		return
 	}
 	if err := handlers.AddUser(user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": err.Error(),
+			"error": err.Error(),
 		})
 		return
 	}
