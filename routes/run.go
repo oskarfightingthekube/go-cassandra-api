@@ -19,6 +19,7 @@ func Run() {
 
 	r.GET("/universities", GetUniversitiesHandler)
 	r.GET("/majors", GetMajorsHandler)
+	r.GET("/majors/:name", GetMajorByNameHandler)
 
 	if err := r.Run(); err != nil {
 		panic(err)

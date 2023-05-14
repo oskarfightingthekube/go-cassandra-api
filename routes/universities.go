@@ -3,6 +3,7 @@ package routes
 import (
 	"go-cassandra-api/handlers"
 	"net/http"
+	"unicode"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,4 +28,21 @@ func GetMajorsHandler(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, majors)
+}
+
+func GetMajorByNameHandler(c *gin.Context) {
+	major, err := handlers.GetMajorByName(capitalize(c.Param("name")))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, major)
+}
+
+func capitalize(str string) string {
+	runes := []rune(str)
+	runes[0] = unicode.ToUpper(runes[0])
+	return string(runes)
 }
