@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"go-cassandra-api/handlers"
 	"go-cassandra-api/structs"
 	"net/http"
@@ -30,10 +31,16 @@ func GetUserHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// get from body and add user
 func AddUserHandler(c *gin.Context) {
 	var user structs.AddUser
-	if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.BindJSON(&user); err != nil {
+		fmt.Println(user)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request",
+		})
+		return
+	}
+	if user.Email == "" || user.Login == "" || user.Password == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Invalid request",
 		})
