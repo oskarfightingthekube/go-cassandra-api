@@ -58,3 +58,7 @@ type DepartmentWithUniversity struct {
 	University_id   string `json:"university_id"`
 	University_name string `json:"university_name"`
 }
+
+type Department struct {
+	Name string `json:"name"`
+}

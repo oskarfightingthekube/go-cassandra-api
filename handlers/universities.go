@@ -135,3 +135,52 @@ func GetDepartments() ([]structs.DepartmentWithUniversity, error) {
 
 	return departments, nil
 }
+
+// func GetDepartmentByUniversity(university_id string) ([]structs.DepartmentWithUniversity, error) {
+// 	var departments []structs.DepartmentWithUniversity
+// 	m := map[string]interface{}{}
+// 	iter := inits.Session.Query("SELECT * FROM departments WHERE university_id = ?", university_id).Iter()
+// 	for iter.MapScan(m) {
+// 		departments = append(departments, structs.DepartmentWithUniversity{
+// 			Department_id:   m["department_id"].(gocql.UUID).String(),
+// 			Name:            m["name"].(string),
+// 			University_id:   m["university_id"].(gocql.UUID).String(),
+// 			University_name: "",
+// 		})
+// 		m = map[string]interface{}{}
+// 	}
+
+// 	// Get university names based on university IDs
+// 	for i, department := range departments {
+// 		var university_name string
+// 		err := inits.Session.Query("SELECT name FROM university WHERE university_id = ?", department.University_id).Scan(&university_name)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		departments[i].University_name = university_name
+// 	}
+
+// 	return departments, nil
+// }
+
+func GetDepartmentByUniversity(name string) ([]structs.DepartmentWithUniversity, error) {
+	var universityID gocql.UUID
+	err := inits.Session.Query("SELECT university_id FROM university WHERE name = ? ALLOW FILTERING", name).Scan(&universityID)
+	if err != nil {
+		return nil, err
+	}
+	var departments []structs.DepartmentWithUniversity
+	m := map[string]interface{}{}
+	iter := inits.Session.Query("SELECT * FROM departments WHERE university_id = ? ALLOW FILTERING", universityID).Iter()
+	for iter.MapScan(m) {
+		departments = append(departments, structs.DepartmentWithUniversity{
+			Department_id:   m["department_id"].(gocql.UUID).String(),
+			Name:            m["name"].(string),
+			University_id:   m["university_id"].(gocql.UUID).String(),
+			University_name: name,
+		})
+		m = map[string]interface{}{}
+	}
+
+	return departments, nil
+}

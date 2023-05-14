@@ -94,3 +94,29 @@ func GetDepartmentsHandler(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, departments)
 }
+
+func GetDepartmentByUniversityHandler(c *gin.Context) {
+	var departments []structs.DepartmentWithUniversity
+	var department structs.Department
+	if err := c.BindJSON(&department); err != nil {
+		fmt.Println(department)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request, check your JSON",
+		})
+		return
+	}
+	if department.Name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request, key values missing or empty",
+		})
+		return
+	}
+	departments, err := handlers.GetDepartmentByUniversity(department.Name)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, departments)
+}
