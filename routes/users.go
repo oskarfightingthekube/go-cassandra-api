@@ -53,7 +53,8 @@ func AddUserHandler(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "User created",
+		"message":  "User created",
+		"user_uid": handlers.UserID,
 	})
 }
 
@@ -110,7 +111,7 @@ func VoteHandler(c *gin.Context) {
 }
 
 func GetMyVotesHandler(c *gin.Context) {
-	var user structs.LoginUser
+	var user structs.LoginUser2
 	if err := c.BindJSON(&user); err != nil {
 		fmt.Println(user)
 		c.JSON(http.StatusBadRequest, gin.H{
