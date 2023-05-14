@@ -79,3 +79,58 @@ func GetMajorByName(name string) ([]structs.MajorsWithUniversity, error) {
 
 	return majors, nil
 }
+
+func GetMajorByType(category string) ([]structs.MajorsWithUniversity, error) {
+	var majors []structs.MajorsWithUniversity
+	m := map[string]interface{}{}
+	iter := inits.Session.Query("SELECT * FROM majors WHERE type = ? ALLOW FILTERING", category).Iter()
+	for iter.MapScan(m) {
+		majors = append(majors, structs.MajorsWithUniversity{
+			Major_id:        m["major_id"].(gocql.UUID).String(),
+			Name:            m["name"].(string),
+			Category:        m["type"].(string),
+			University_id:   m["university_id"].(gocql.UUID).String(),
+			University_name: "",
+		})
+		m = map[string]interface{}{}
+	}
+
+	// Get university names based on university IDs
+	for i, major := range majors {
+		var university_name string
+		err := inits.Session.Query("SELECT name FROM university WHERE university_id = ?", major.University_id).Scan(&university_name)
+		if err != nil {
+			return nil, err
+		}
+		majors[i].University_name = university_name
+	}
+
+	return majors, nil
+}
+
+func GetDepartments() ([]structs.DepartmentWithUniversity, error) {
+	var departments []structs.DepartmentWithUniversity
+	m := map[string]interface{}{}
+	iter := inits.Session.Query("SELECT * FROM departments").Iter()
+	for iter.MapScan(m) {
+		departments = append(departments, structs.DepartmentWithUniversity{
+			Department_id:   m["department_id"].(gocql.UUID).String(),
+			Name:            m["name"].(string),
+			University_id:   m["university_id"].(gocql.UUID).String(),
+			University_name: "",
+		})
+		m = map[string]interface{}{}
+	}
+
+	// Get university names based on university IDs
+	for i, department := range departments {
+		var university_name string
+		err := inits.Session.Query("SELECT name FROM university WHERE university_id = ?", department.University_id).Scan(&university_name)
+		if err != nil {
+			return nil, err
+		}
+		departments[i].University_name = university_name
+	}
+
+	return departments, nil
+}

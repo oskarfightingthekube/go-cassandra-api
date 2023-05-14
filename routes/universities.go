@@ -57,3 +57,40 @@ func GetMajorByNameHandler(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, majors)
 }
+
+func GetMajorByTypeHandler(c *gin.Context) {
+	var majors []structs.MajorsWithUniversity
+	var major structs.MajorType
+	if err := c.BindJSON(&major); err != nil {
+		fmt.Println(major)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request, check your JSON",
+		})
+		return
+	}
+	if major.Type == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request, key values missing or empty",
+		})
+		return
+	}
+	majors, err := handlers.GetMajorByType(major.Type)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, majors)
+}
+
+func GetDepartmentsHandler(c *gin.Context) {
+	departments, err := handlers.GetDepartments()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, departments)
+}
