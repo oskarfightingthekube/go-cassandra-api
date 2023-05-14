@@ -112,7 +112,7 @@ func Vote(login string, universityName string) error {
 	}
 
 	// insert into votes table
-	if err := inits.Session.Query("INSERT INTO votes (voted_id, login, university_name) VALUES (uuid(), ?, ?)",
+	if err := inits.Session.Query("INSERT INTO votes (voted_id, login, university_name, voted_on) VALUES (uuid(), ?, ?, timestamp())",
 		login, universityName).Exec(); err != nil {
 		return err
 	}
