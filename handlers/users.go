@@ -119,9 +119,9 @@ func Vote(login string, universityName string) error {
 		return errors.New("university does not exist")
 	}
 
-	// insert into votes table
-	if err := inits.Session.Query("INSERT INTO votes (voted_id, login, university_name, voted_on) VALUES (uuid(), ?, ?, timestamp())",
-		login, universityName).Exec(); err != nil {
+	now := time.Now()
+	if err := inits.Session.Query("INSERT INTO votes (voted_id, login, university_name, voted_on) VALUES (uuid(), ?, ?, ?)",
+		login, universityName, now).Exec(); err != nil {
 		return err
 	}
 	return nil
