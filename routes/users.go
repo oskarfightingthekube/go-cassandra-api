@@ -82,3 +82,54 @@ func LoginHandler(c *gin.Context) {
 		"message": "User logged in",
 	})
 }
+
+func VoteHandler(c *gin.Context) {
+	var vote structs.Vote
+	if err := c.BindJSON(&vote); err != nil {
+		fmt.Println(vote)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request, check your JSON",
+		})
+		return
+	}
+	if vote.Login == "" || vote.University_name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request, key values missing or empty",
+		})
+		return
+	}
+	if err := handlers.Vote(vote.Login, vote.University_name); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Vote created",
+	})
+}
+
+func GetMyVotesHandler(c *gin.Context) {
+	var user structs.LoginUser
+	if err := c.BindJSON(&user); err != nil {
+		fmt.Println(user)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request, check your JSON",
+		})
+		return
+	}
+	if user.Login == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request, key values missing or empty",
+		})
+		return
+	}
+	votes, err := handlers.MyVotes(user.Login)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, votes)
+}

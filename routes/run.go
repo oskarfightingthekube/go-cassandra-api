@@ -5,7 +5,7 @@ import (
 )
 
 func Run() {
-	r := gin.New()
+	r := gin.Default()
 	// get request to get all users
 	r.GET("/users", GetUsersHandler)
 	// get request to get a user by id
@@ -17,7 +17,20 @@ func Run() {
 
 	/* ----------------------------------- */
 
+	r.POST("/vote", VoteHandler)
+	r.GET("/myvotes", GetMyVotesHandler)
+
+	/* ----------------------------------- */
+
 	r.GET("/universities", GetUniversitiesHandler)
+	r.GET("/majors", GetMajorsHandler)
+	r.GET("/majors/name", GetMajorByNameHandler)
+	r.GET("/majors/type", GetMajorByTypeHandler)
+	r.GET("/departments", GetDepartmentsHandler)
+	r.GET("/departments/university", GetDepartmentByUniversityHandler)
+	r.POST("/adduniversity", AddUniversityHandler)
+	// r.POST("/addmajor", AddMajorHandler)
+	// r.POST("/adddepartment", AddDepartmentHandler)
 
 	if err := r.Run(); err != nil {
 		panic(err)
