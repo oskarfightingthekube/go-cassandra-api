@@ -14,8 +14,11 @@ func Run() {
 	r.POST("/adduser", AddUserHandler)
 	// login user
 	r.GET("/login", LoginHandler)
+
 	/* ----------------------------------- */
-	// r.GET("/universities", GetUniversitiesHandler)
+
+	r.GET("/universities", GetUniversitiesHandler)
+
 	if err := r.Run(); err != nil {
 		panic(err)
 	}
