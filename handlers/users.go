@@ -61,3 +61,13 @@ func AddUser(user structs.AddUser) error {
 	}
 	return nil
 }
+
+func LoginUser(user structs.LoginUser) (structs.User, error) {
+	var dbUser structs.User
+	err := inits.Session.Query("SELECT * FROM users WHERE email = ? AND password = ? ALLOW FILTERING",
+		user.Login, user.Password).Scan(&dbUser.User_id, &dbUser.Email, &dbUser.Login, &dbUser.Password)
+	if err != nil {
+		return structs.User{}, errors.New("invalid credentials")
+	}
+	return dbUser, nil
+}

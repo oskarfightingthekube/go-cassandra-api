@@ -56,3 +56,29 @@ func AddUserHandler(c *gin.Context) {
 		"message": "User created",
 	})
 }
+
+func LoginHandler(c *gin.Context) {
+	var user structs.LoginUser
+	if err := c.BindJSON(&user); err != nil {
+		fmt.Println(user)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request, check your JSON",
+		})
+		return
+	}
+	if user.Login == "" || user.Password == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request, key values missing or empty",
+		})
+		return
+	}
+	if _, err := handlers.LoginUser(user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "User logged in",
+	})
+}
