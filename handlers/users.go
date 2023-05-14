@@ -37,3 +37,11 @@ func GetUser(id string) (structs.User, error) {
 	}
 	return user, nil
 }
+
+func AddUser(user structs.AddUser) error {
+	if err := inits.Session.Query("INSERT INTO users (user_id, email, login, password) VALUES (?, ?, ?, ?)",
+		gocql.TimeUUID(), user.Email, user.Login, user.Password).Exec(); err != nil {
+		return err
+	}
+	return nil
+}

@@ -15,6 +15,7 @@ func Run() {
 	})
 	r.GET("/users", GetUsersHandler)
 	r.GET("/users/:id", GetUserHandler)
+	r.POST("/adduser", AddUserHandler)
 	if err := r.Run(); err != nil {
 		panic(err)
 	}
