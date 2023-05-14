@@ -73,3 +73,10 @@ type Vote struct {
 	Login           string `json:"login"`
 	University_name string `json:"university_name"`
 }
+
+type MyVotes struct {
+	Voted_id        string `json:"voted_id"`
+	Login           string `json:"login"`
+	University_name string `json:"university_name"`
+	Voted_on        string `json:"voted_on"`
+}

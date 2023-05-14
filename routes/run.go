@@ -18,7 +18,7 @@ func Run() {
 	/* ----------------------------------- */
 
 	r.POST("/vote", VoteHandler)
-	// r.POST("/addfavorite", AddFavoriteHandler)
+	r.GET("/myvotes", GetMyVotesHandler)
 
 	/* ----------------------------------- */
 

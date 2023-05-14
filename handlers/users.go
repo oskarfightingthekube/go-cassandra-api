@@ -126,3 +126,19 @@ func Vote(login string, universityName string) error {
 	}
 	return nil
 }
+
+func MyVotes(login string) ([]structs.MyVotes, error) {
+	var votes []structs.MyVotes
+	m := map[string]interface{}{}
+	iter := inits.Session.Query("SELECT * FROM votes WHERE login = ? ALLOW FILTERING", login).Iter()
+	for iter.MapScan(m) {
+		votes = append(votes, structs.MyVotes{
+			Voted_id:        m["voted_id"].(gocql.UUID).String(),
+			Login:           m["login"].(string),
+			University_name: m["university_name"].(string),
+			Voted_on:        m["voted_on"].(time.Time).String(),
+		})
+		m = map[string]interface{}{}
+	}
+	return votes, nil
+}
