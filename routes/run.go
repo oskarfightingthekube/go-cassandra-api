@@ -17,6 +17,10 @@ func Run() {
 
 	/* ----------------------------------- */
 
+	r.POST("/vote", VoteHandler)
+
+	/* ----------------------------------- */
+
 	r.GET("/universities", GetUniversitiesHandler)
 	r.GET("/majors", GetMajorsHandler)
 	r.GET("/majors/name", GetMajorByNameHandler)

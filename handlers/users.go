@@ -46,6 +46,11 @@ func AddUser(user structs.AddUser) error {
 		user.Login).Scan(&count); err != nil {
 		return err
 	}
+
+	if count > 0 {
+		return errors.New("user already exists")
+	}
+
 	if err := inits.Session.Query("SELECT COUNT(*) FROM users WHERE email=? ALLOW FILTERING",
 		user.Email).Scan(&count); err != nil {
 		return err
@@ -70,4 +75,46 @@ func LoginUser(user structs.LoginUser) (structs.User, error) {
 		return structs.User{}, errors.New("invalid credentials")
 	}
 	return dbUser, nil
+}
+
+func Vote(login string, universityName string) error {
+	// check if user already voted for this university
+	var count int
+	if err := inits.Session.Query("SELECT COUNT(*) FROM votes WHERE login = ? AND university_name = ? ALLOW FILTERING",
+		login, universityName).Scan(&count); err != nil {
+		return err
+	}
+
+	if count > 0 {
+		return errors.New("user already voted for this university")
+	}
+
+	// check if login exists in users table
+	var userCount int
+	if err := inits.Session.Query("SELECT COUNT(*) FROM users WHERE login = ? ALLOW FILTERING",
+		login).Scan(&userCount); err != nil {
+		return err
+	}
+
+	if userCount == 0 {
+		return errors.New("user does not exist")
+	}
+
+	// check if universityName exists in universities table
+	var universityCount int
+	if err := inits.Session.Query("SELECT COUNT(*) FROM university WHERE name = ? ALLOW FILTERING",
+		universityName).Scan(&universityCount); err != nil {
+		return err
+	}
+
+	if universityCount == 0 {
+		return errors.New("university does not exist")
+	}
+
+	// insert into votes table
+	if err := inits.Session.Query("INSERT INTO votes (voted_id, login, university_name) VALUES (uuid(), ?, ?)",
+		login, universityName).Exec(); err != nil {
+		return err
+	}
+	return nil
 }
