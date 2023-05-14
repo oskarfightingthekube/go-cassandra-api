@@ -18,7 +18,6 @@ func Run() {
 	/* ----------------------------------- */
 
 	r.POST("/vote", VoteHandler)
-	r.GET("/myvotes", GetMyVotesHandler)
 
 	/* ----------------------------------- */
 

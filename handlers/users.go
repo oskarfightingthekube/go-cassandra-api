@@ -119,26 +119,10 @@ func Vote(login string, universityName string) error {
 		return errors.New("university does not exist")
 	}
 
-	now := time.Now()
-	if err := inits.Session.Query("INSERT INTO votes (voted_id, login, university_name, voted_on) VALUES (uuid(), ?, ?, ?)",
-		login, universityName, now).Exec(); err != nil {
+	// insert into votes table
+	if err := inits.Session.Query("INSERT INTO votes (voted_id, login, university_name) VALUES (uuid(), ?, ?)",
+		login, universityName).Exec(); err != nil {
 		return err
 	}
 	return nil
-}
-
-func MyVotes(login string) ([]structs.MyVotes, error) {
-	var votes []structs.MyVotes
-	m := map[string]interface{}{}
-	iter := inits.Session.Query("SELECT * FROM votes WHERE login = ? ALLOW FILTERING", login).Iter()
-	for iter.MapScan(m) {
-		votes = append(votes, structs.MyVotes{
-			Voted_id:        m["voted_id"].(gocql.UUID).String(),
-			Login:           m["login"].(string),
-			University_name: m["university_name"].(string),
-			Voted_on:        m["voted_on"].(time.Time).String(),
-		})
-		m = map[string]interface{}{}
-	}
-	return votes, nil
 }

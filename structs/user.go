@@ -68,3 +68,8 @@ type AddUniversity struct {
 	Country string `json:"country"`
 	Name    string `json:"name"`
 }
+
+type Vote struct {
+	Login           string `json:"login"`
+	University_name string `json:"university_name"`
+}
