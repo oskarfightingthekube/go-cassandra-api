@@ -120,3 +120,29 @@ func GetDepartmentByUniversityHandler(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, departments)
 }
+
+func AddUniversityHandler(c *gin.Context) {
+	var university structs.AddUniversity
+	if err := c.BindJSON(&university); err != nil {
+		fmt.Println(university)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request, check your JSON",
+		})
+		return
+	}
+	if university.Name == "" || university.Country == "" || university.City == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request, key values missing or empty",
+		})
+		return
+	}
+	if err := handlers.AddUniversity(university); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "University added successfully",
+	})
+}
