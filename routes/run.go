@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"go-cassandra-api/handlers"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +21,12 @@ func Run() {
 }
 
 func GetUsersHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "GetUsersHandler",
-	})
+	users, err := handlers.GetUsers()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, users)
 }
