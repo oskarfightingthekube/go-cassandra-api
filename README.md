@@ -1,6 +1,11 @@
 # go-cassandra-api
 Projekt na studia jest to API napisane w Golangu dla Cassandry - pozwala na dodawanie użytkowników, wyświetlanie ich, głosowanie na uniwersytety czy wyszukiwanie ich po nazwie bądź po typie kierunku. 
-
+## Jak odpalić?
+Wystarczy wejść w folder repo i wpisać 
+```golang
+go run main.go
+```
+API będzie nasłuchiwać na portcie :8080 (localhost:8080)
 ###  Zarządzanie użytkownikami
 **Wyświetalnie wszystkich dodanych użytkowników:**
 ```bash
