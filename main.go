@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	routes.Run()
 	inits.InitDB()
+	routes.Run()
 }
