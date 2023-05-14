@@ -5,7 +5,7 @@ import (
 )
 
 func Run() {
-	r := gin.New()
+	r := gin.Default()
 	// get request to get all users
 	r.GET("/users", GetUsersHandler)
 	// get request to get a user by id
@@ -18,6 +18,7 @@ func Run() {
 	/* ----------------------------------- */
 
 	r.GET("/universities", GetUniversitiesHandler)
+	r.GET("/majors", GetMajorsHandler)
 
 	if err := r.Run(); err != nil {
 		panic(err)

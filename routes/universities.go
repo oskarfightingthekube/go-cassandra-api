@@ -17,3 +17,14 @@ func GetUniversitiesHandler(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, universities)
 }
+
+func GetMajorsHandler(c *gin.Context) {
+	majors, err := handlers.GetMajors()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, majors)
+}

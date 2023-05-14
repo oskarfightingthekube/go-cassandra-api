@@ -24,3 +24,18 @@ type University struct {
 	Country       string `json:"country"`
 	Name          string `json:"name"`
 }
+
+type Majors struct {
+	Major_id      string `json:"major_id"`
+	Name          string `json:"name"`
+	Category      string `json:"type"`
+	University_id string `json:"university_id"`
+}
+
+type MajorsWithUniversity struct {
+	Major_id        string `json:"major_id"`
+	Name            string `json:"name"`
+	Category        string `json:"type"`
+	University_id   string `json:"university_id"`
+	University_name string `json:"university_name"`
+}
