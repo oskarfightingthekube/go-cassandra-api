@@ -1,2 +1,0 @@
-cqlsh:schools> CREATE TABLE users ( user_id UUID PRIMARY KEY,
-login TEXT, username TEXT, password TEXT);
