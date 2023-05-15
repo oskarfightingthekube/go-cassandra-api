@@ -111,7 +111,7 @@ func VoteHandler(c *gin.Context) {
 }
 
 func GetMyVotesHandler(c *gin.Context) {
-	var user structs.LoginUser2
+	var user structs.LoginUser
 	if err := c.BindJSON(&user); err != nil {
 		fmt.Println(user)
 		c.JSON(http.StatusBadRequest, gin.H{
