@@ -79,6 +79,7 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -d '{
     "login": "user1",
+    "password": "insert_pasword",
     "university_name": "Collegium da Vinci"
 }'
 ```
