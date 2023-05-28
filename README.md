@@ -99,7 +99,8 @@ curl -X GET \
   http://localhost:8080/myvotes \
   -H 'Content-Type: application/json' \
   -d '{
-    "login": "user1"
+    "email": "user1", # wpisujemy email, ale trzeba podać login - do poprawki
+    "password": "password"
 }'
 ```
 Output
